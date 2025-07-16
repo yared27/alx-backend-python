@@ -27,7 +27,7 @@ def stream_users_in_batches(batch_size):
         print(f"Error streaming users in batches: {err}")
         return  
     
-def batch_process_users(batch_size):
+def batch_processing(batch_size):
     for user in stream_users_in_batches(batch_size):
         # Process each user here
         if user["age"] > 25:
