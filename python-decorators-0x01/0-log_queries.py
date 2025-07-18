@@ -1,8 +1,8 @@
 import seed
-
+from datetime import datetime
 def log_queries(func):
     def wrapper(query, *args, **kwargs):
-        print(f"Executing query: {query}")
+        print(f"Executing query: {query} at {datetime.now()}")
         return func(query, *args, **kwargs)
     return wrapper
 
