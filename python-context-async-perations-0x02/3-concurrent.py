@@ -1,48 +1,31 @@
 import asyncio
-import mysql.connector
-import seed
+import aiosqlite
 
-def fetch_all_users(query):
-    conn = seed.connect_to_alx_prodev()
-    if conn is None:
-        print("Failed to connect to the database.")
-        return []   
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users " )
-    results = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return results
+async def async_fetch_users():
+    async with aiosqlite.connect("users.db") as db:
+        cursor = await db.execute("SELECT * FROM users")
+        rows = await cursor.fetchall()
+        await cursor.close()
+        return rows
 
-def fetch_older_users(query):
-    conn = seed.connect_to_alx_prodev()
-    if conn is None:
-        print("Failed to connect to the database.")
-        return []
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users WHERE age > 40")
-    results = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return results
-
-async def async_fetch_all_users(query):
-    return await asyncio.to_thread(fetch_all_users, query)
-
-async def async_fetch_older_users(query):
-    return await asyncio.to_thread(fetch_older_users, query)
+async def async_fetch_older_users():
+    async with aiosqlite.connect("users.db") as db:
+        cursor = await db.execute("SELECT * FROM users WHERE age > 40")
+        rows = await cursor.fetchall()
+        await cursor.close()
+        return rows
 
 async def fetch_concurrently():
-    all_users, older_users = await asyncio.gather(
-        async_fetch_all_users("SELECT * FROM users"),
-        async_fetch_older_users("SELECT * FROM users WHERE age > 40")
+    users, older_users = await asyncio.gather(
+        async_fetch_users(),
+        async_fetch_older_users()
     )
-
     print("All Users:")
-    for user in all_users:
+    for user in users:
         print(user)
-    print("Older Users:")
+    print("\nUsers Older Than 40:")
     for user in older_users:
         print(user)
+
 if __name__ == "__main__":
     asyncio.run(fetch_concurrently())
