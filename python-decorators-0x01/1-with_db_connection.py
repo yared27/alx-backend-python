@@ -1,7 +1,9 @@
 import mysql.connector
 import seed
+import functools
 
 def with_db_connection(func):
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         conn = seed.connect_to_alx_prodev()
         if conn is None:
