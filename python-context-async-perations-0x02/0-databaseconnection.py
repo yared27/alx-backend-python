@@ -30,7 +30,7 @@ class DatabaseConnection:
 
 with DatabaseConnection(os.getenv("DB_HOST"), os.getenv("DB_USER"), os.getenv("DB_PASSWORD"), os.getenv("DB_NAME")) as conn:
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM user_data")
+    cursor.execute("SELECT * FROM users")
     results = cursor.fetchall()
     cursor.close()
     print(results) if results else print("No data found.")
