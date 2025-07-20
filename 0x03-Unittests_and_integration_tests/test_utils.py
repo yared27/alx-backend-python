@@ -12,4 +12,12 @@ class TestAccessNestedMap(unittest.TestCase):
     def test_access_nested_map(self, input_map, path, expected):
         self.assertEqual(access_nested_map(input_map, path), expected)
 
-    
+    @parameterized.expand([
+        ({}, ("a",)),
+        ({"a":1},("a","b"))
+    ])
+    def test_access_nested_map_exeption(self, input_map, path):
+        with self.assertRaises(KeyError) as cm:
+            access_nested_map(input_map, path)
+            self.assertEqual(str(cm.exception), f"' {path[-1]}'")
+            
