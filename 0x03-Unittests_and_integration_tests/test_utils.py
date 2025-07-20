@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
+"""
+Unit tests for utils module: access_nested_map, get_json, and memoize.
+"""
 import unittest
 from parameterized import parameterized
 from utils import access_nested_map, get_json
 from unittest.mock import patch
 from utils import memoize
 
+
 class TestAccessNestedMap(unittest.TestCase):
     """Tests for access_nested_map function."""
-
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
         ({"a": {"b": 2}}, ("a", "b"), 2),
@@ -45,6 +48,7 @@ class TestGetJson(unittest.TestCase):
 
 class TestMemoize(unittest.TestCase):
     def test_memoize(self):
+
         class TestClass:
             def a_method(self):
                 return 42
