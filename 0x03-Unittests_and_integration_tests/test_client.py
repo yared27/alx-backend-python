@@ -70,9 +70,10 @@ class TestGithubOrgClient(unittest.TestCase):
         """Test has_license returns the correct boolean."""
         client = GithubOrgClient("test_org")
         self.assertEqual(client.has_license(repo, license_key), expected)
-
-from unittest.mock import patch, PropertyMock, MagicMock
 from parameterized import parameterized_class
+from client import GithubOrgClient
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
+
 
 @parameterized_class([
     {
@@ -83,6 +84,7 @@ from parameterized import parameterized_class
     }
 ])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration tests for GithubOrgClient.public_repos"""
 
     @classmethod
     def setUpClass(cls):
@@ -102,3 +104,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        client = GithubOrgClient("test_org")
+        self.assertEqual(client.public_repos(), self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        client = GithubOrgClient("test_org")
+        self.assertEqual(client.public_repos("apache-2.0"), self.apache2_repos)

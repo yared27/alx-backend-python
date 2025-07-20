@@ -5,6 +5,7 @@ from typing import (
     List,
     Dict,
 )
+import requests
 
 from utils import (
     get_json,
