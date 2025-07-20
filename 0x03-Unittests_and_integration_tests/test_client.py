@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Unit tests for the GithubOrgClient class."""
+from parameterized import parameterized_class
 from client import GithubOrgClient
 import unittest
 from unittest.mock import patch, PropertyMock
@@ -70,6 +71,8 @@ class TestGithubOrgClient(unittest.TestCase):
         client = GithubOrgClient("test_org")
         self.assertEqual(client.has_license(repo, license_key), expected)
 
+from unittest.mock import patch, PropertyMock, MagicMock
+from parameterized import parameterized_class
 
 @parameterized_class([
     {
@@ -85,7 +88,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Mock requests.get to return fixture data depending on URL"""
-        cls.get_patcher = patch("client.requests.get")
+        cls.get_patcher = patch("utils.requests.get")
         cls.mock_get = cls.get_patcher.start()
 
         def side_effect(url, *args, **kwargs):
@@ -112,6 +115,3 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """Test public_repos method with license filter"""
         client = GithubOrgClient("test_org")
         self.assertEqual(client.public_repos("apache-2.0"), self.apache2_repos)
-        
-if __name__ == "__main__":
-    unittest.main()
