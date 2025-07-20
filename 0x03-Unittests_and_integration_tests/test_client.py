@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Unit tests for the GithubOrgClient class."""
+
 import unittest
 from unittest.mock import patch, PropertyMock, MagicMock
 from parameterized import parameterized, parameterized_class
@@ -55,10 +56,7 @@ class TestGithubOrgClient(unittest.TestCase):
             )
             client = GithubOrgClient("testorg")
             result = client.public_repos()
-            self.assertEqual(
-                result,
-                ["repo1", "repo2", "repo3"]
-            )
+            self.assertEqual(result, ["repo1", "repo2", "repo3"])
             mock_get_json.assert_called_once_with(
                 "https://api.github.com/orgs/testorg/repos"
             )
@@ -87,6 +85,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Patch requests.get before all tests"""
         cls.get_patcher = patch("client.requests.get")
         cls.mock_get = cls.get_patcher.start()
 
@@ -102,15 +101,21 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Stop patching requests.get"""
         cls.get_patcher.stop()
 
     def test_public_repos(self):
+        """Test public_repos returns expected repo names"""
         client = GithubOrgClient("test_org")
         self.assertEqual(client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self):
+        """Test public_repos returns only repos with given license"""
         client = GithubOrgClient("test_org")
-        self.assertEqual(client.public_repos("apache-2.0"), self.apache2_repos)
+        self.assertEqual(
+            client.public_repos("apache-2.0"),
+            self.apache2_repos
+        )
 
 
 if __name__ == "__main__":
