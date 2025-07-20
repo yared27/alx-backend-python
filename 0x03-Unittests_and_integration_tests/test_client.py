@@ -87,8 +87,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Mock requests.get to return fixture data depending on URL"""
-        cls.get_patcher = patch("utils.requests.get")
+        """Start patching requests.get with side_effect to mock JSON responses."""
+        # Adjust patch target according to where requests is imported in your code:
+        # If requests is used inside client.py directly, patch 'client.requests.get'
+        # If requests is used inside utils.py, patch 'utils.requests.get'
+        cls.get_patcher = patch("client.requests.get")  
         cls.mock_get = cls.get_patcher.start()
 
         def side_effect(url, *args, **kwargs):
@@ -107,11 +110,14 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher.stop()
 
     def test_public_repos(self):
-        """Test public_repos method returns expected repo list"""
+        """Test public_repos returns expected repo list."""
         client = GithubOrgClient("test_org")
         self.assertEqual(client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self):
-        """Test public_repos method with license filter"""
+        """Test public_repos returns repos filtered by license."""
         client = GithubOrgClient("test_org")
         self.assertEqual(client.public_repos("apache-2.0"), self.apache2_repos)
+
+if __name__ == "__main__":
+    unittest.main()
