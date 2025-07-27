@@ -2,7 +2,7 @@
 """Test suite for GithubOrgClient class
 """
 import unittest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, Mock
 from parameterized import parameterized_class
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
@@ -25,11 +25,14 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
 
-        # Setup mock responses
-        cls.mock_get.side_effect = [
-            TEST_PAYLOAD[0][0],  # org payload
-            TEST_PAYLOAD[0][1],  # repos payload
-        ]
+        # Create mock responses
+        mock_org_response = Mock()
+        mock_org_response.json.return_value = cls.org_payload
+
+        mock_repos_response = Mock()
+        mock_repos_response.json.return_value = cls.repos_payload
+
+        cls.mock_get.side_effect = [mock_org_response, mock_repos_response]
 
     @classmethod
     def tearDownClass(cls):
@@ -44,4 +47,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def test_public_repos_with_license(self):
         """Test that public_repos filters repos by license key"""
         client = GithubOrgClient("test_org")
-        self.assertEqual(client.public_repos(license="apache-2.0"), self.apache2_repos)
+        self.assertEqual(
+            client.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
