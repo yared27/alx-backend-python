@@ -25,14 +25,15 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
 
-        # Create mock responses
-        mock_org_response = Mock()
-        mock_org_response.json.return_value = cls.org_payload
+        def side_effect(url, *args, **kwargs):
+            mock_resp = Mock()
+            if url == cls.org_payload["repos_url"]:
+                mock_resp.json.return_value = cls.repos_payload
+            else:
+                mock_resp.json.return_value = cls.org_payload
+            return mock_resp
 
-        mock_repos_response = Mock()
-        mock_repos_response.json.return_value = cls.repos_payload
-
-        cls.mock_get.side_effect = [mock_org_response, mock_repos_response]
+        cls.mock_get.side_effect = side_effect
 
     @classmethod
     def tearDownClass(cls):
