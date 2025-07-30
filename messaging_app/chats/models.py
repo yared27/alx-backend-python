@@ -11,6 +11,9 @@ class UserRole(models.TextChoices):
 
 class User(AbstractBaseUser):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    first_name = models.CharField(max_length=30, null=True, blank=True)
+    last_name = models.CharField(max_length=30, null=True, blank=True)
+    password = models.CharField(max_length=128) # Django's default password field
     email = models.EmailField(max_length=20, null=True, blank=True, unique=True)
     phone_number = models.CharField(max_length=150, unique=True)
     role = models.CharField(max_length=10, choices=UserRole.choices, default=UserRole.GUEST)
