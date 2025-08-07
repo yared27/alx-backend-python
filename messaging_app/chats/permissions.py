@@ -10,7 +10,7 @@ class IsParticipantOfConversation(permissions.BasePermission):
         return request.user and request.user.is_authenticated
     
     def has_object_permission(self, request, view, obj):
-        if request.method in ['GET', 'POST', 'PUT', 'DELETE']:
+        if request.method in ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']:
             if isinstance(obj, Conversation):
                 return request.user in obj.participants.all()
             
