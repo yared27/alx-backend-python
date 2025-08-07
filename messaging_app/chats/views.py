@@ -46,4 +46,6 @@ class MessageViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
-        return Message.objects.filter(conversation__participants=self.request.user) 
+        return Message.objects.filter(conversation__participants=self.request.user)
+    
+    
