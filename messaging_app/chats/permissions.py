@@ -9,6 +9,9 @@ class IsParticipantOfConversation(permissions.BasePermission):
     
     def has_object_permission(self, request, view, obj):
 
-        conversation = getattr(obj, 'conversation', obj)
-
-        return request.user in conversation.participants.all() if conversation else False
+        if isinstance(obj, Conversartion):
+            return request.user in obj.participants.all()
+        
+        if isinstance(obj, Message):
+            return request.user in obj.conversation.participants.all()
+        return False
