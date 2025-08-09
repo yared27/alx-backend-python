@@ -1,5 +1,5 @@
 import django_filters
-from .models import Message
+from .models import Message, User
 
 class MessageFilter(django_filters.FilterSet):
     sender = django_filters.ModelChoiceFilter(queryset=User.objects.all())

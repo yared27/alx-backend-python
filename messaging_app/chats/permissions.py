@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from messaging_app.chats.models import Conversation
+from .models import Conversation
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view,obj):
         return obj.user == request.user
